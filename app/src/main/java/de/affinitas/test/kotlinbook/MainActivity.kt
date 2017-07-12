@@ -2,65 +2,44 @@ package de.affinitas.test.kotlinbook
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.ViewGroup
+import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    // List creation
+    private val items = listOf(
+            "Mon 6/23 - Sunny - 31/17",
+            "Tue 6/24 - Foggy - 21/8",
+            "Wed 6/25 - Cloudy - 22/17",
+            "Thurs 6/26 - Rainy - 18/11",
+            "Fri 6/27 - Foggy - 21/10",
+            "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+            "Sun 6/29 - Sunny - 20/7"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        message.text = "Hello Kotlin!"
-
-        toast("hello")
-        toast("Hello", Toast.LENGTH_LONG)
-        niceToast("Hello", "MyTag")
-        niceToast("Hello", "MyTag", Toast.LENGTH_LONG)
-        toast(message = "Hello", length = Toast.LENGTH_LONG)
+        forecast_list.layoutManager = LinearLayoutManager(this)
+        forecast_list.adapter = ForecastListAdapter(items)
     }
 
 
+    class ForecastListAdapter(val items: List<String>) :
+            RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.textView.text = items[position]
+        }
 
-    /**
-     *  default constructor
-     */
-//    class Person(name: String, surname: String) {
-//        init {
-//
-//        }
-//    }
+        override fun getItemCount(): Int = items.size
 
-// class inheritance
-    open class Animal(name: String)
-    class Person(name: String, surname: String) : Animal(name) {
-
-        // functions
-//    fun add(x: Int, y: Int) : Int{
-//        return  x + y
-//    }
-        fun add(x: Int, y: Int) : Int = x + y
-
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):ViewHolder {
+            return ViewHolder(TextView(parent.context))
+        }
+        class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
     }
-// constructor functional parameters
-    /**
-     * length specifies a default value
-     */
-
-    fun toast(message: String, length: Int = Toast.LENGTH_SHORT){
-        Toast.makeText(this, message, length).show()
-    }
-//    toast("Hello")
-//    toast("Hello", Toast.LENGTH_LONG)
-    fun niceToast(message: String, tag: String = MainActivity::class.java.simpleName,
-                  length: Int = Toast.LENGTH_SHORT) {
-        Toast.makeText(this,"[$tag] $message", length).show()
-    }
-
-    /**
-     *   String Templates
-     *   you can use string expressions directly like "\[$className] $message"
-     *   "Your name is ${user.name}"
-     */
-
-
 }
