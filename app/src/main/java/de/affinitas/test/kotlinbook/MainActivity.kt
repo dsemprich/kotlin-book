@@ -17,11 +17,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        forecast_list.layoutManager = LinearLayoutManager(this)
+        forecastList.layoutManager = LinearLayoutManager(this)
 
         doAsync{
            val result = RequestForecastCommand("16356").execute()
-            uiThread { forecast_list.adapter = ForecastListAdapter(result, { toast(it.date) }) }
+            uiThread { forecastList.adapter = ForecastListAdapter(result, { toast(it.date) }) }
         }
     }
 }
