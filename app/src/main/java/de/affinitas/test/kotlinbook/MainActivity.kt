@@ -6,40 +6,44 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.TextView
+import de.affinitas.test.kotlinbook.domain.commands.RequestForecastCommand
+import de.affinitas.test.kotlinbook.domain.model.ForecastList
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
 
-    // List creation
-    private val items = listOf(
-            "Mon 6/23 - Sunny - 31/17",
-            "Tue 6/24 - Foggy - 21/8",
-            "Wed 6/25 - Cloudy - 22/17",
-            "Thurs 6/26 - Rainy - 18/11",
-            "Fri 6/27 - Foggy - 21/10",
-            "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-            "Sun 6/29 - Sunny - 20/7"
-    )
+    private val url = "http://api.openweathermap.org/data/2.5/weather?q=Berlin&appid=bd5e378503939ddaee76f12ad7a97608"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         forecast_list.layoutManager = LinearLayoutManager(this)
-        forecast_list.adapter = ForecastListAdapter(items)
+
+        doAsync{
+           val result = RequestForecastCommand("10777").execute()
+            uiThread { forecast_list.adapter = ForecastListAdapter(result) }
+        }
     }
 
 
-    class ForecastListAdapter(val items: List<String>) :
+    class ForecastListAdapter(val weekForecast: ForecastList) :
             RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.textView.text = items[position]
-        }
-
-        override fun getItemCount(): Int = items.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):ViewHolder {
             return ViewHolder(TextView(parent.context))
         }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            with(weekForecast.dailyForecast[position]) {
+                holder.textView.text = "$date - $description - $high/$low"
+            }
+        }
+
+        override fun getItemCount(): Int = weekForecast.dailyForecast.size
+
         class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
     }
+
 }
