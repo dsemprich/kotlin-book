@@ -3,13 +3,11 @@ package de.affinitas.test.kotlinbook
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.ViewGroup
-import android.widget.TextView
 import de.affinitas.test.kotlinbook.domain.commands.RequestForecastCommand
-import de.affinitas.test.kotlinbook.domain.model.ForecastList
+import de.affinitas.test.kotlinbook.view.ForecastListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
@@ -22,28 +20,8 @@ class MainActivity : AppCompatActivity() {
         forecast_list.layoutManager = LinearLayoutManager(this)
 
         doAsync{
-           val result = RequestForecastCommand("10777").execute()
-            uiThread { forecast_list.adapter = ForecastListAdapter(result) }
+           val result = RequestForecastCommand("16356").execute()
+            uiThread { forecast_list.adapter = ForecastListAdapter(result, { toast(it.date) }) }
         }
     }
-
-
-    class ForecastListAdapter(val weekForecast: ForecastList) :
-            RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):ViewHolder {
-            return ViewHolder(TextView(parent.context))
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            with(weekForecast.dailyForecast[position]) {
-                holder.textView.text = "$date - $description - $high/$low"
-            }
-        }
-
-        override fun getItemCount(): Int = weekForecast.dailyForecast.size
-
-        class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
-    }
-
 }

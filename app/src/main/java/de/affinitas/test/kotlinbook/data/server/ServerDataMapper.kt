@@ -16,9 +16,11 @@ class ForecastDataMapper {
     }
 
     private fun convertForecastItemToDomain(forecast: Forecast): de.affinitas.test.kotlinbook.domain.model.Forecast {
-        return de.affinitas.test.kotlinbook.domain.model.Forecast(convertDate(forecast.date), forecast.weather[0].description,
-                forecast.temp.max.toInt(), forecast.temp.min.toInt())
+        return de.affinitas.test.kotlinbook.domain.model.Forecast(convertDate(forecast.dt), forecast.weather[0].description,
+                forecast.temp.max.toInt(), forecast.temp.min.toInt(), generateIconUrl(forecast.weather[0].icon))
     }
+
+    private fun generateIconUrl(iconCode: String): String = "http://openweathermap.org/img/w/$iconCode.png"
 
     private fun  convertDate(date: Long): String {
         val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
