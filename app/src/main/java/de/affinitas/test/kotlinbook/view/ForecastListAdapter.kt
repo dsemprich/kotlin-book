@@ -9,6 +9,7 @@ import de.affinitas.test.kotlinbook.R
 import de.affinitas.test.kotlinbook.domain.model.Forecast
 import de.affinitas.test.kotlinbook.domain.model.ForecastList
 import de.affinitas.test.kotlinbook.extensions.ctx
+import de.affinitas.test.kotlinbook.extensions.toDateString
 import kotlinx.android.synthetic.main.item_forecast.view.*
 
 class ForecastListAdapter(val weekForecast: ForecastList, val itemClick: (Forecast) -> Unit) :
@@ -32,7 +33,7 @@ class ForecastListAdapter(val weekForecast: ForecastList, val itemClick: (Foreca
         fun bindForecast(forecast: Forecast){
             with(forecast){
                 Picasso.with(itemView.ctx).load(iconUrl).into(itemView.icon)
-                itemView.date.text = date
+                itemView.date.text = date.toDateString()
                 itemView.description.text = description
                 itemView.maxTemperature.text = "$high"
                 itemView.minTemperature.text = "$low"

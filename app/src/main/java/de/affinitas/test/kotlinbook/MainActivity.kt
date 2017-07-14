@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import de.affinitas.test.kotlinbook.domain.commands.RequestForecastCommand
+import de.affinitas.test.kotlinbook.extensions.toDateString
 import de.affinitas.test.kotlinbook.view.ForecastListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -20,8 +21,9 @@ class MainActivity : AppCompatActivity() {
         forecastList.layoutManager = LinearLayoutManager(this)
 
         doAsync{
-           val result = RequestForecastCommand("16356").execute()
-            uiThread { forecastList.adapter = ForecastListAdapter(result, { toast(it.date) }) }
+           val result = RequestForecastCommand(16356L).execute()
+            uiThread { forecastList.adapter = ForecastListAdapter(result, { toast(it.date.toDateString()) }) }
+
         }
     }
 }

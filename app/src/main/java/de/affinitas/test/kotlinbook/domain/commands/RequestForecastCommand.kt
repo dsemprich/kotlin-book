@@ -1,12 +1,14 @@
 package de.affinitas.test.kotlinbook.domain.commands
 
-import de.affinitas.test.kotlinbook.data.server.ForecastDataMapper
-import de.affinitas.test.kotlinbook.domain.ForecastRequest
+import de.affinitas.test.kotlinbook.domain.datasource.ForecastProvider
 import de.affinitas.test.kotlinbook.domain.model.ForecastList
 
-class RequestForecastCommand(private val zipCode: String) : Command<ForecastList> {
-    override fun execute(): ForecastList {
-        val forecastRequest = ForecastRequest(zipCode)
-        return ForecastDataMapper().convertFromDataModel(forecastRequest.execute())
+class RequestForecastCommand(
+        val zipCode: Long, val forecastProvider: ForecastProvider = ForecastProvider()) : Command<ForecastList> {
+
+    companion object {
+        val DAYS = 7
     }
+
+    override fun execute() = forecastProvider.requestByZipCode(zipCode, DAYS)
 }
